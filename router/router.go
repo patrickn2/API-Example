@@ -37,12 +37,12 @@ func Init(h *handler.Handler) {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	h.Shutdown.ShutdownSignal = true
-	log.Println("Shut Down Requested...")
+	log.Println("Shut down requested...")
 	log.Println("Shutting down after finish all current requests: ", h.Shutdown.RunningProcess)
 	for {
 		if h.Shutdown.ShutdownSignal {
 			if h.Shutdown.RunningProcess > 0 {
-				fmt.Printf("server is shutting down: %d remaining requests to shutdown\n", h.Shutdown.RunningProcess)
+				fmt.Printf("Server is shutting down: %d remaining requests to shutdown\n", h.Shutdown.RunningProcess)
 				time.Sleep(time.Second)
 				continue
 			}

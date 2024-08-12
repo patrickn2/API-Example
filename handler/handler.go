@@ -29,7 +29,7 @@ func NewHandler(db *gorm.DB) *Handler {
 func (h *Handler) Middleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if h.Shutdown.ShutdownSignal {
-			fmt.Println("Server is Down")
+			fmt.Println("Server is shutting down - not accepting new requests")
 			c.AbortWithStatus(http.StatusGone)
 			return
 		}

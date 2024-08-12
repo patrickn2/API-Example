@@ -9,7 +9,7 @@ import (
 )
 
 func InitRoutes(handler *handler.Handler, router *gin.Engine) {
-	router.GET("/populate", timeout.New(
+	router.POST("/populate", timeout.New(
 		timeout.WithTimeout(360*time.Second),
 		timeout.WithHandler(handler.Populate),
 	))
@@ -17,9 +17,4 @@ func InitRoutes(handler *handler.Handler, router *gin.Engine) {
 		timeout.WithTimeout(30*time.Second),
 		timeout.WithHandler(handler.Clerks),
 	))
-
-	router.GET("/hold", func(c *gin.Context) {
-		time.Sleep(time.Second * 30)
-		c.Status(200)
-	})
 }

@@ -41,7 +41,7 @@ func (h *Handler) Populate(ctx *gin.Context) {
 	}
 	rows, err := model.InsertNewUsers(h.db, &users)
 	if err != nil {
-		log.Printf("error inserting users %v\n", err)
+		log.Printf("Error inserting users %v\n", err)
 		done <- true
 		ctx.Status(http.StatusInternalServerError)
 		return
@@ -71,21 +71,21 @@ func checkConnectionStatus(cancel context.CancelFunc, ctx *gin.Context, done cha
 
 func getRandomUser(ctx context.Context, u chan *[]schema.User, wg *sync.WaitGroup, try int) {
 	if try == 0 {
-		log.Println("server is not responding as expected after some requests")
+		log.Println("Server is not responding as expected after some requests")
 		u <- nil
 		wg.Done()
 		return
 	}
-	req, err := http.NewRequestWithContext(ctx, "GET", "https://randomuser.me/api/?results=5000", http.NoBody)
+	req, err := http.NewRequestWithContext(ctx, "GET", "https://randomuser.me/api/?results=1000", http.NoBody)
 	if err != nil {
-		log.Println("error creating new request", err)
+		log.Println("Error creating new request", err)
 		u <- nil
 		wg.Done()
 		return
 	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		log.Println("error getting user", err)
+		log.Println("Error getting user", err)
 		u <- nil
 		wg.Done()
 		return
@@ -105,7 +105,7 @@ func getRandomUser(ctx context.Context, u chan *[]schema.User, wg *sync.WaitGrou
 	err = json.NewDecoder(resp.Body).Decode(&randomUsers)
 
 	if err != nil {
-		log.Printf("error decoding json %v - Fetch Failed - Trying Again... \n", err)
+		log.Printf("Error decoding json %v - Fetch Failed - Trying Again... \n", err)
 		time.Sleep(delay)
 		getRandomUser(ctx, u, wg, try-1)
 		return
