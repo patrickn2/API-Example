@@ -38,7 +38,9 @@ func Init(h *handler.Handler) {
 	<-quit
 	h.Shutdown.ShutdownSignal = true
 	log.Println("Shut down requested...")
-	log.Println("Shutting down after finish all current requests: ", h.Shutdown.RunningProcess)
+	if h.Shutdown.RunningProcess > 0 {
+		log.Println("Shutting down after finish all current requests: ", h.Shutdown.RunningProcess)
+	}
 	for {
 		if h.Shutdown.ShutdownSignal {
 			if h.Shutdown.RunningProcess > 0 {
@@ -49,5 +51,5 @@ func Init(h *handler.Handler) {
 			break
 		}
 	}
-	log.Println("Server exiting")
+	log.Println("Server exited")
 }
