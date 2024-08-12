@@ -11,3 +11,4 @@ CREATE TABLE random_project.users (
 	picture   text NOT NULL,
 	created_at timestamp NOT NULL
 );
+CREATE INDEX idx_users_created_at_desc ON random_project.users (created_at DESC);

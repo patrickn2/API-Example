@@ -12,7 +12,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/patrickn2/Clerk-Challenge/model"
-	schema "github.com/patrickn2/Clerk-Challenge/schemas"
+	"github.com/patrickn2/Clerk-Challenge/schema"
 )
 
 func (h *Handler) Populate(ctx *gin.Context) {
@@ -36,7 +36,8 @@ func (h *Handler) Populate(ctx *gin.Context) {
 		users = append(users, *u...)
 	}
 	if len(users) == 0 {
-		ctx.JSON(http.StatusFailedDependency, map[string]int{"rows_affected": 0})
+		ctx.JSON(http.StatusServiceUnavailable, map[string]int{"rows_affected": 0})
+		return
 	}
 	rows, err := model.InsertNewUsers(h.db, &users)
 	if err != nil {
@@ -93,9 +94,9 @@ func getRandomUser(ctx context.Context, u chan *[]schema.User, wg *sync.WaitGrou
 
 	var randomUsers schema.RandomUser
 
-	delay := time.Millisecond * time.Duration((rand.Float64()*200)+400+(5-float64(try)))
+	delay := time.Millisecond * time.Duration((rand.Float64()*200)+400+((6-float64(try))*2000))
 	if resp.StatusCode == http.StatusTooManyRequests {
-		log.Printf("Too Many Requests. Trying again in %d ms\n", delay)
+		log.Printf("randomuser.me is returning too many requests. Trying again in %d ms\n", delay)
 		time.Sleep(delay)
 		getRandomUser(ctx, u, wg, try-1)
 		return

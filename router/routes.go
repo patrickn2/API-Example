@@ -13,4 +13,8 @@ func InitRoutes(handler *handler.Handler, router *gin.Engine) {
 		timeout.WithTimeout(30*time.Second),
 		timeout.WithHandler(handler.Populate),
 	))
+	router.GET("/clerks", timeout.New(
+		timeout.WithTimeout(30*time.Second),
+		timeout.WithHandler(handler.Clerks),
+	))
 }
