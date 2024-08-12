@@ -17,14 +17,14 @@ func InitPostgres() (gorm.Dialector, *gorm.Config) {
 	port := os.Getenv("POSTGRES_PORT")
 	sch := os.Getenv("POSTGRES_SCHEMA")
 
-	config := gorm.Config{}
+	config := &gorm.Config{}
 	if sch != "" {
-		config = gorm.Config{
+		config = &gorm.Config{
 			NamingStrategy: schema.NamingStrategy{
 				TablePrefix: sch + ".",
 			}}
 	}
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", hostname, user, password, database, port)
-	return postgres.Open(dsn), &config
+	return postgres.Open(dsn), config
 }
