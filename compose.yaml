@@ -19,6 +19,18 @@ services:
       - .env
     networks:
       - postgres-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "--username=${POSTGRES_USER}",
+          "--dbname=${POSTGRES_DB}",
+        ]
+      interval: 10s
+      retries: 5
+      start_period: 20s
+      timeout: 10s
   pgadmin:
     image: dpage/pgadmin4
     ports:
@@ -31,51 +43,22 @@ services:
       - postgres-network
     volumes:
       - ./.docker_volumes/pgadmin-data/:/var/lib/pgadmin/
+  server:
+    build:
+      context: .
+      target: final
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_HOSTNAME=database
+    depends_on:
+      database:
+        condition: service_healthy
+        restart: true
+    ports:
+      - 8080:8080
+    networks:
+      - postgres-network
 networks:
   postgres-network:
     driver: bridge
-  # server:
-  #   build:
-  #     context: .
-  #     target: final
-  #   depends_on:
-  #     - database
-  #   ports:
-  #     - 8080:8080
-
-  # networks:
-  #   postgres-network:
-  #     driver: bridge
-# The commented out section below is an example of how to define a PostgreSQL
-# database that your application can use. `depends_on` tells Docker Compose to
-# start the database before your application. The `db-data` volume persists the
-# database data between container restarts. The `db-password` secret is used
-# to set the database password. You must create `db/password.txt` and add
-# a password of your choosing to it before running `docker compose up`.
-#     depends_on:
-#       db:
-#         condition: service_healthy
-#   db:
-#     image: postgres
-#     restart: always
-#     user: postgres
-#     secrets:
-#       - db-password
-#     volumes:
-#       - db-data:/var/lib/postgresql/data
-#     environment:
-#       - POSTGRES_DB=example
-#       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
-#     expose:
-#       - 5432
-#     healthcheck:
-#       test: [ "CMD", "pg_isready" ]
-#       interval: 10s
-#       timeout: 5s
-#       retries: 5
-# volumes:
-#   db-data:
-# secrets:
-#   db-password:
-#     file: db/password.txt
-

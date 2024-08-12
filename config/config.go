@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -10,7 +11,7 @@ import (
 func Init() {
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatalf("error loading env file %v\n", err)
+		fmt.Printf(".env file not found %v\n", err)
 	}
 
 	mandatoryEnvs := []string{
