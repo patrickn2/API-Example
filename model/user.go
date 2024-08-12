@@ -20,24 +20,47 @@ func GetUsers(db *gorm.DB, limit string, startingAfter string, endingBefore stri
 	if limit == "" {
 		limit = "10"
 	}
-	l, _ := strconv.Atoi(limit)
+	emailQuery := "email LIKE ?"
+	l, limitErr := strconv.Atoi(limit)
+	if limitErr != nil {
+		l = 10
+	}
+	if l > 100 {
+		l = 100
+	}
+	if l < 1 {
+		l = 10
+	}
+
+	email = strings.ToLower(strings.ReplaceAll(email, "%", ""))
 	var users []schema.User
 	tx := db.Select("id, name, email, phone, picture, created_at")
 	if startingAfter != "" {
 		sa, _ := strconv.Atoi(startingAfter)
-		sub := db.Select("created_at").Table("random_project.users").Where("id = ?", sa)
-		tx = tx.Table("random_project.users").Where("created_at < (?)", sub)
-	} else if endingBefore != "" {
+		subQueryId := db.Select("created_at").Model(&schema.User{}).Where("id = ?", sa)
+		tx = tx.Model(&schema.User{}).Where("created_at < (?)", subQueryId).Limit(l).Order("created_at DESC")
+		if email != "" {
+			tx = tx.Where(emailQuery, email+"%")
+		}
+		tx.Find(&users)
+		return &users, nil
+	}
+
+	if endingBefore != "" {
 		eb, _ := strconv.Atoi(endingBefore)
-		sub := db.Select("created_at").Table("random_project.users").Where("id = ?", eb)
-		sub2 := db.Select("id, name, email, phone, picture, created_at").Table("random_project.users").Where("created_at > (?)", sub).Order("created_at ASC").Limit(l)
-		tx = tx.Table("(?)", sub2).Order("created_at DESC")
+		subQueryId := db.Select("created_at").Model(&schema.User{}).Where("id = ?", eb)
+		subQueryBefore := db.Select("id, name, email, phone, picture, created_at").Model(&schema.User{}).Where("created_at > (?)", subQueryId).Order("created_at ASC").Limit(l)
+		if email != "" {
+			subQueryBefore = subQueryBefore.Where(emailQuery, email+"%")
+		}
+		tx.Table("(?) as u", subQueryBefore).Order("u.created_at DESC").Find(&users)
+		return &users, nil
 	}
+
 	if email != "" {
-
-		tx = tx.Where("email LIKE '?%'", strings.ToLower(email))
+		tx = tx.Where(emailQuery, email+"%")
 	}
-
 	tx.Order("created_at DESC").Limit(l).Find(&users)
+
 	return &users, nil
 }

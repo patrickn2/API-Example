@@ -10,7 +10,7 @@ import (
 
 func InitRoutes(handler *handler.Handler, router *gin.Engine) {
 	router.GET("/populate", timeout.New(
-		timeout.WithTimeout(30*time.Second),
+		timeout.WithTimeout(360*time.Second),
 		timeout.WithHandler(handler.Populate),
 	))
 	router.GET("/clerks", timeout.New(

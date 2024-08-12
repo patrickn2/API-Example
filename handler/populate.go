@@ -76,7 +76,7 @@ func getRandomUser(ctx context.Context, u chan *[]schema.User, wg *sync.WaitGrou
 		wg.Done()
 		return
 	}
-	req, err := http.NewRequestWithContext(ctx, "GET", "https://randomuser.me/api/?results=1000", http.NoBody)
+	req, err := http.NewRequestWithContext(ctx, "GET", "https://randomuser.me/api/?results=5000", http.NoBody)
 	if err != nil {
 		log.Println("error creating new request", err)
 		u <- nil
