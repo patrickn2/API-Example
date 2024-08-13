@@ -15,7 +15,9 @@ import (
 
 func Init(h *handler.Handler) {
 	router := gin.Default()
+
 	router.Use(h.Middleware())
+
 	InitRoutes(h, router)
 	port := os.Getenv("API_PORT")
 	if port == "" {
