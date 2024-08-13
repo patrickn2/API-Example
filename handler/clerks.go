@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/patrickn2/Clerk-Challenge/model"
 )
 
 func (h *Handler) Clerks(ctx *gin.Context) {
@@ -22,7 +21,7 @@ func (h *Handler) Clerks(ctx *gin.Context) {
 		return
 	}
 
-	users, err := model.GetUsers(h.db, limit, startingAfter, endingBefore, email)
+	users, err := h.UserCase.GetUsers(limit, startingAfter, endingBefore, email)
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusInternalServerError)
 		return

@@ -5,20 +5,24 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
+	"github.com/patrickn2/Clerk-Challenge/usecase"
 )
 
+type HandlerUseCases struct {
+	UserUsecase *usecase.UserUsecase
+}
+
 type Handler struct {
-	db       *gorm.DB
+	UserCase *usecase.UserUsecase
 	Shutdown struct {
 		RunningProcess int
 		ShutdownSignal bool
 	}
 }
 
-func NewHandler(db *gorm.DB) *Handler {
+func NewHandler(h *HandlerUseCases) *Handler {
 	return &Handler{
-		db: db,
+		UserCase: h.UserUsecase,
 		Shutdown: struct {
 			RunningProcess int
 			ShutdownSignal bool

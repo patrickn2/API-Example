@@ -1,4 +1,4 @@
-package model
+package usecase
 
 import (
 	"strconv"
@@ -8,15 +8,25 @@ import (
 	"gorm.io/gorm"
 )
 
-func InsertNewUsers(db *gorm.DB, users *[]schema.User) (int, error) {
-	result := db.CreateInBatches(users, 200)
+type UserUsecase struct {
+	db *gorm.DB
+}
+
+func NewUserUsecase(db *gorm.DB) *UserUsecase {
+	return &UserUsecase{
+		db: db,
+	}
+}
+
+func (u *UserUsecase) InsertNewUsers(users *[]schema.User) (int, error) {
+	result := u.db.CreateInBatches(users, 200)
 	if result.Error != nil {
 		return int(result.RowsAffected), result.Error
 	}
 	return int(result.RowsAffected), nil
 }
 
-func GetUsers(db *gorm.DB, limit string, startingAfter string, endingBefore string, email string) (*[]schema.User, error) {
+func (u *UserUsecase) GetUsers(limit string, startingAfter string, endingBefore string, email string) (*[]schema.User, error) {
 	if limit == "" {
 		limit = "10"
 	}
@@ -34,10 +44,10 @@ func GetUsers(db *gorm.DB, limit string, startingAfter string, endingBefore stri
 
 	email = strings.ToLower(strings.ReplaceAll(email, "%", ""))
 	var users []schema.User
-	tx := db.Select("id, name, email, phone, picture, created_at")
+	tx := u.db.Select("id, name, email, phone, picture, created_at")
 	if startingAfter != "" {
 		sa, _ := strconv.Atoi(startingAfter)
-		subQueryId := db.Select("created_at").Model(&schema.User{}).Where("id = ?", sa)
+		subQueryId := u.db.Select("created_at").Model(&schema.User{}).Where("id = ?", sa)
 		tx = tx.Model(&schema.User{}).Where("created_at < (?)", subQueryId).Limit(l).Order("created_at DESC")
 		if email != "" {
 			tx = tx.Where(emailQuery, email+"%")
@@ -48,8 +58,8 @@ func GetUsers(db *gorm.DB, limit string, startingAfter string, endingBefore stri
 
 	if endingBefore != "" {
 		eb, _ := strconv.Atoi(endingBefore)
-		subQueryId := db.Select("created_at").Model(&schema.User{}).Where("id = ?", eb)
-		subQueryBefore := db.Select("id, name, email, phone, picture, created_at").Model(&schema.User{}).Where("created_at > (?)", subQueryId).Order("created_at ASC").Limit(l)
+		subQueryId := u.db.Select("created_at").Model(&schema.User{}).Where("id = ?", eb)
+		subQueryBefore := u.db.Select("id, name, email, phone, picture, created_at").Model(&schema.User{}).Where("created_at > (?)", subQueryId).Order("created_at ASC").Limit(l)
 		if email != "" {
 			subQueryBefore = subQueryBefore.Where(emailQuery, email+"%")
 		}

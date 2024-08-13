@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/patrickn2/Clerk-Challenge/model"
 	"github.com/patrickn2/Clerk-Challenge/schema"
 )
 
@@ -39,7 +38,7 @@ func (h *Handler) Populate(ctx *gin.Context) {
 		ctx.JSON(http.StatusServiceUnavailable, map[string]int{"rows_affected": 0})
 		return
 	}
-	rows, err := model.InsertNewUsers(h.db, &users)
+	rows, err := h.UserCase.InsertNewUsers(&users)
 	if err != nil {
 		log.Printf("Error inserting users %v\n", err)
 		done <- true
