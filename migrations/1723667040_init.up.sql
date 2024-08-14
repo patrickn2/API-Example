@@ -1,3 +1,5 @@
+-- Migration Up: Init
+
 CREATE DATABASE clerk OWNER postgres;
 GRANT ALL PRIVILEGES ON DATABASE clerk TO postgres;
 \c clerk;
