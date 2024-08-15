@@ -3,8 +3,7 @@
 CREATE DATABASE clerk OWNER postgres;
 GRANT ALL PRIVILEGES ON DATABASE clerk TO postgres;
 \c clerk;
-CREATE SCHEMA random_project;
-CREATE TABLE random_project.users (
+CREATE TABLE users (
   id BIGSERIAL PRIMARY KEY,
   name      text NOT NULL,
 	email     text NOT NULL,
@@ -12,5 +11,5 @@ CREATE TABLE random_project.users (
 	picture   text NOT NULL,
 	created_at timestamp NOT NULL
 );
-CREATE INDEX idx_users_created_at_desc_email ON random_project.users (created_at DESC, email);
-CREATE INDEX idx_users_created_at_email ON random_project.users (created_at ASC, email);
+CREATE INDEX idx_users_created_at_desc_email ON users (created_at DESC, email);
+CREATE INDEX idx_users_created_at_email ON users (created_at ASC, email);

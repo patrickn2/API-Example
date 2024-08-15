@@ -10,6 +10,7 @@ import (
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/joho/godotenv"
 )
 
@@ -28,17 +29,17 @@ func initMigration() *migrate.Migrate {
 	fmt.Println(postgresStr)
 	db, err := sql.Open("postgres", postgresStr)
 	if err != nil {
-		log.Fatalln("error:", err)
+		log.Fatalln("sql Open error:", err)
 	}
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	if err != nil {
-		log.Fatalln("error:", err)
+		log.Fatalln("postgres connection error :", err)
 	}
 	m, err := migrate.NewWithDatabaseInstance(
-		"file:///migrations",
+		"file://migrations",
 		"postgres", driver)
 	if err != nil {
-		log.Fatalln("error:", err)
+		log.Fatalln("migrate error:", err)
 	}
 	return m
 }
