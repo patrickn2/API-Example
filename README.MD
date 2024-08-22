@@ -64,7 +64,7 @@ make dev
 #### /populate
 
 - `POST` : Go to randomuser.me 5 times getting 1000 users on each call and insert total of 5000 users on database
-  - Response: empty
+  - Response: Status 200
 
 #### /clerks
 
