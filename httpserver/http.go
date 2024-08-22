@@ -1,4 +1,4 @@
-package httpHandler
+package httpserver
 
 import (
 	"context"
@@ -13,24 +13,24 @@ import (
 	"github.com/patrickn2/api-challenge/handler"
 )
 
-type HttpHandler struct {
+type httpserver struct {
 	handler  *handler.Handler
 	hostname string
 	port     string
 }
 
-func NewHttpHandler(hostname string, port string, handler *handler.Handler) *HttpHandler {
-	return &HttpHandler{
+func New(hostname string, port string, handler *handler.Handler) *httpserver {
+	return &httpserver{
 		hostname: hostname,
 		port:     port,
 		handler:  handler,
 	}
 }
 
-func (r *HttpHandler) Init() {
+func (r *httpserver) Start() {
 	ginEngine := gin.Default()
 
-	InitRoutes(r.handler, ginEngine)
+	r.InitRoutes(ginEngine)
 
 	srv := &http.Server{
 		Addr:    r.hostname + ":" + r.port,

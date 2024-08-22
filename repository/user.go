@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/patrickn2/api-challenge/infra/db"
@@ -13,27 +14,28 @@ type UserRepository struct {
 	db *db.Database
 }
 
-func NewUserRepository(db *db.Database) *UserRepository {
+func NewUserRepository(db *db.Database) interfaces.UserRepository {
 	return &UserRepository{db}
 }
 
-func (p *UserRepository) InsertUsers(users []*schema.User) (int, error) {
-	result := p.db.Conn.CreateInBatches(users, 200)
+func (p *UserRepository) InsertUsers(ctx context.Context, users []*schema.User) (int, error) {
+	db := p.db.Conn.WithContext(ctx)
+	result := db.CreateInBatches(users, 200)
 	if result.Error != nil {
 		return 0, result.Error
 	}
 	return int(result.RowsAffected), nil
 }
 
-func (p *UserRepository) GetClerks(params *interfaces.GetClerksParams) ([]*schema.User, error) {
+func (p *UserRepository) GetClerks(ctx context.Context, params *schema.GetClerksParams) ([]*schema.User, error) {
 	// Limit will be (limit + 1) to check if there is a next or previous page
-
+	db := p.db.Conn.WithContext(ctx)
 	if params.StartingAfter != nil || params.EndingBefore != nil {
-		return getStartEndingUsers(p.db.Conn, params)
+		return getStartEndingUsers(db, params)
 	}
 
 	var users []*schema.User
-	tx := p.db.Conn.Model(&schema.User{})
+	tx := db.Model(&schema.User{})
 	if params.Email != nil {
 		tx = tx.Where("email ~ ?", *params.Email)
 	}
@@ -41,7 +43,7 @@ func (p *UserRepository) GetClerks(params *interfaces.GetClerksParams) ([]*schem
 	return users, nil
 }
 
-func getStartEndingUsers(db *gorm.DB, params *interfaces.GetClerksParams) ([]*schema.User, error) {
+func getStartEndingUsers(db *gorm.DB, params *schema.GetClerksParams) ([]*schema.User, error) {
 	var users []*schema.User
 	var v struct {
 		createdAtSignal string

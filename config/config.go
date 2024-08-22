@@ -1,39 +1,32 @@
 package config
 
 import (
+	"context"
 	"log"
-	"os"
 
 	_ "github.com/joho/godotenv/autoload"
+	"github.com/sethvargo/go-envconfig"
 )
 
-func Init() map[string]string {
-	envs := make(map[string]string)
+type Envs struct {
+	PostgresUser     string `env:"POSTGRES_USER, required"`
+	PostgresPassword string `env:"POSTGRES_PASSWORD, required"`
+	PostgresHostname string `env:"POSTGRES_HOSTNAME, required"`
+	PostgresDatabase string `env:"POSTGRES_DATABASE, required"`
+	PostgresPort     string `env:"POSTGRES_PORT, required"`
+	ApiPort          string `env:"API_PORT, required"`
+}
 
-	// Mandatory Envs
-	mandatoryEnvs := []string{
-		"POSTGRES_USER",
-		"POSTGRES_PASSWORD",
-		"POSTGRES_HOSTNAME",
-		"POSTGRES_DATABASE",
-		"POSTGRES_PORT",
-		"API_PORT",
+var envs Envs
+
+func GetEnvs() *Envs {
+	return &envs
+}
+
+func Init() *Envs {
+	ctx := context.Background()
+	if err := envconfig.Process(ctx, &envs); err != nil {
+		log.Fatal(err)
 	}
-
-	for _, val := range mandatoryEnvs {
-		envVal := os.Getenv(val)
-		if envVal == "" {
-			log.Fatalf("environment variable %s not found\n", val)
-		}
-		envs[val] = envVal
-	}
-
-	// Optional Envs
-	optionalEnvs := []string{}
-
-	for _, val := range optionalEnvs {
-		envVal := os.Getenv(val)
-		envs[val] = envVal
-	}
-	return envs
+	return &envs
 }

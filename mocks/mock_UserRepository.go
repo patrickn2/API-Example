@@ -3,7 +3,8 @@
 package mocks
 
 import (
-	interfaces "github.com/patrickn2/api-challenge/interfaces"
+	context "context"
+
 	mock "github.com/stretchr/testify/mock"
 
 	schema "github.com/patrickn2/api-challenge/schema"
@@ -22,9 +23,9 @@ func (_m *MockUserRepository) EXPECT() *MockUserRepository_Expecter {
 	return &MockUserRepository_Expecter{mock: &_m.Mock}
 }
 
-// GetClerks provides a mock function with given fields: _a0
-func (_m *MockUserRepository) GetClerks(_a0 *interfaces.GetClerksParams) ([]*schema.User, error) {
-	ret := _m.Called(_a0)
+// GetClerks provides a mock function with given fields: _a0, _a1
+func (_m *MockUserRepository) GetClerks(_a0 context.Context, _a1 *schema.GetClerksParams) ([]*schema.User, error) {
+	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetClerks")
@@ -32,19 +33,19 @@ func (_m *MockUserRepository) GetClerks(_a0 *interfaces.GetClerksParams) ([]*sch
 
 	var r0 []*schema.User
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*interfaces.GetClerksParams) ([]*schema.User, error)); ok {
-		return rf(_a0)
+	if rf, ok := ret.Get(0).(func(context.Context, *schema.GetClerksParams) ([]*schema.User, error)); ok {
+		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(*interfaces.GetClerksParams) []*schema.User); ok {
-		r0 = rf(_a0)
+	if rf, ok := ret.Get(0).(func(context.Context, *schema.GetClerksParams) []*schema.User); ok {
+		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*schema.User)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(*interfaces.GetClerksParams) error); ok {
-		r1 = rf(_a0)
+	if rf, ok := ret.Get(1).(func(context.Context, *schema.GetClerksParams) error); ok {
+		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -58,14 +59,15 @@ type MockUserRepository_GetClerks_Call struct {
 }
 
 // GetClerks is a helper method to define mock.On call
-//   - _a0 *interfaces.GetClerksParams
-func (_e *MockUserRepository_Expecter) GetClerks(_a0 interface{}) *MockUserRepository_GetClerks_Call {
-	return &MockUserRepository_GetClerks_Call{Call: _e.mock.On("GetClerks", _a0)}
+//   - _a0 context.Context
+//   - _a1 *schema.GetClerksParams
+func (_e *MockUserRepository_Expecter) GetClerks(_a0 interface{}, _a1 interface{}) *MockUserRepository_GetClerks_Call {
+	return &MockUserRepository_GetClerks_Call{Call: _e.mock.On("GetClerks", _a0, _a1)}
 }
 
-func (_c *MockUserRepository_GetClerks_Call) Run(run func(_a0 *interfaces.GetClerksParams)) *MockUserRepository_GetClerks_Call {
+func (_c *MockUserRepository_GetClerks_Call) Run(run func(_a0 context.Context, _a1 *schema.GetClerksParams)) *MockUserRepository_GetClerks_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*interfaces.GetClerksParams))
+		run(args[0].(context.Context), args[1].(*schema.GetClerksParams))
 	})
 	return _c
 }
@@ -75,14 +77,14 @@ func (_c *MockUserRepository_GetClerks_Call) Return(_a0 []*schema.User, _a1 erro
 	return _c
 }
 
-func (_c *MockUserRepository_GetClerks_Call) RunAndReturn(run func(*interfaces.GetClerksParams) ([]*schema.User, error)) *MockUserRepository_GetClerks_Call {
+func (_c *MockUserRepository_GetClerks_Call) RunAndReturn(run func(context.Context, *schema.GetClerksParams) ([]*schema.User, error)) *MockUserRepository_GetClerks_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// InsertUsers provides a mock function with given fields: _a0
-func (_m *MockUserRepository) InsertUsers(_a0 []*schema.User) (int, error) {
-	ret := _m.Called(_a0)
+// InsertUsers provides a mock function with given fields: _a0, _a1
+func (_m *MockUserRepository) InsertUsers(_a0 context.Context, _a1 []*schema.User) (int, error) {
+	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for InsertUsers")
@@ -90,17 +92,17 @@ func (_m *MockUserRepository) InsertUsers(_a0 []*schema.User) (int, error) {
 
 	var r0 int
 	var r1 error
-	if rf, ok := ret.Get(0).(func([]*schema.User) (int, error)); ok {
-		return rf(_a0)
+	if rf, ok := ret.Get(0).(func(context.Context, []*schema.User) (int, error)); ok {
+		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func([]*schema.User) int); ok {
-		r0 = rf(_a0)
+	if rf, ok := ret.Get(0).(func(context.Context, []*schema.User) int); ok {
+		r0 = rf(_a0, _a1)
 	} else {
 		r0 = ret.Get(0).(int)
 	}
 
-	if rf, ok := ret.Get(1).(func([]*schema.User) error); ok {
-		r1 = rf(_a0)
+	if rf, ok := ret.Get(1).(func(context.Context, []*schema.User) error); ok {
+		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -114,14 +116,15 @@ type MockUserRepository_InsertUsers_Call struct {
 }
 
 // InsertUsers is a helper method to define mock.On call
-//   - _a0 []*schema.User
-func (_e *MockUserRepository_Expecter) InsertUsers(_a0 interface{}) *MockUserRepository_InsertUsers_Call {
-	return &MockUserRepository_InsertUsers_Call{Call: _e.mock.On("InsertUsers", _a0)}
+//   - _a0 context.Context
+//   - _a1 []*schema.User
+func (_e *MockUserRepository_Expecter) InsertUsers(_a0 interface{}, _a1 interface{}) *MockUserRepository_InsertUsers_Call {
+	return &MockUserRepository_InsertUsers_Call{Call: _e.mock.On("InsertUsers", _a0, _a1)}
 }
 
-func (_c *MockUserRepository_InsertUsers_Call) Run(run func(_a0 []*schema.User)) *MockUserRepository_InsertUsers_Call {
+func (_c *MockUserRepository_InsertUsers_Call) Run(run func(_a0 context.Context, _a1 []*schema.User)) *MockUserRepository_InsertUsers_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].([]*schema.User))
+		run(args[0].(context.Context), args[1].([]*schema.User))
 	})
 	return _c
 }
@@ -131,7 +134,7 @@ func (_c *MockUserRepository_InsertUsers_Call) Return(_a0 int, _a1 error) *MockU
 	return _c
 }
 
-func (_c *MockUserRepository_InsertUsers_Call) RunAndReturn(run func([]*schema.User) (int, error)) *MockUserRepository_InsertUsers_Call {
+func (_c *MockUserRepository_InsertUsers_Call) RunAndReturn(run func(context.Context, []*schema.User) (int, error)) *MockUserRepository_InsertUsers_Call {
 	_c.Call.Return(run)
 	return _c
 }

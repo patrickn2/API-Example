@@ -16,9 +16,9 @@ import (
 )
 
 func initMigration() *migrate.Migrate {
-	envs := config.Init()
+	env := config.Init()
 
-	postgresStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", envs["POSTGRES_USER"], envs["POSTGRES_PASSWORD"], envs["POSTGRES_HOSTNAME"], envs["POSTGRES_PORT"], envs["POSTGRES_DATABASE"])
+	postgresStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", env.PostgresUser, env.PostgresPassword, env.PostgresHostname, env.PostgresPort, env.PostgresDatabase)
 	db, err := sql.Open("postgres", postgresStr)
 	if err != nil {
 		log.Fatalln("sql Open error:", err)
