@@ -24,8 +24,8 @@ func main() {
 		Port:     envs["POSTGRES_PORT"],
 	}
 	db := db.NewDatabase(dbConnection)
-	userRep := repository.NewUserDB(db)
-	userService := service.NewUserService(userRep)
+	userRepository := repository.NewUserRepository(db)
+	userService := service.NewUserService(userRepository)
 	handler := handler.NewHandler(userService)
 	httpHdlr := httpHandler.NewHttpHandler("", envs["API_PORT"], handler)
 	httpHdlr.Init()
