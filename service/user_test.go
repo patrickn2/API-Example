@@ -4,13 +4,13 @@ import (
 	"testing"
 
 	"github.com/patrickn2/api-challenge/interfaces"
-	mockedInterfaces "github.com/patrickn2/api-challenge/mocks/github.com/patrickn2/api-challenge/interfaces"
+	"github.com/patrickn2/api-challenge/mocks"
 	"github.com/patrickn2/api-challenge/schema"
 	"github.com/stretchr/testify/assert"
 )
 
 func Test_Clerks(t *testing.T) {
-	repo := mockedInterfaces.NewMockUserRepository(t)
+	repo := mocks.NewMockUserRepository(t)
 	tcases := map[string]struct {
 		getClerksOutput []*schema.User
 		params          *interfaces.GetClerksParams
