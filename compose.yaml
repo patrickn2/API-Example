@@ -1,0 +1,45 @@
+services:
+  database:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./.docker_volumes/data/:/var/lib/postgresql/data/
+      - ./infra/init.sql:/docker-entrypoint-initdb.d/init.sql
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_EXTENSIONS=pg_trgm
+    networks:
+      - postgres-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "--username=${POSTGRES_USER}",
+          "--dbname=${POSTGRES_DATABASE}",
+        ]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 10s
+  server:
+    build:
+      context: .
+      target: server
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_HOSTNAME=database
+    depends_on:
+      database:
+        condition: service_healthy
+        restart: true
+    ports:
+      - 8080:8080
+    networks:
+      - postgres-network
+networks:
+  postgres-network:
+    driver: bridge

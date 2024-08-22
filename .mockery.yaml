@@ -1,0 +1,4 @@
+with-expecter: true
+packages:
+  github.com/patrickn2/api-challenge/interfaces:
+    all: true

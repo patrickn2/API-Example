@@ -1,0 +1,4 @@
+CREATE DATABASE clerk OWNER postgres;
+GRANT ALL PRIVILEGES ON DATABASE clerk TO postgres;
+\c clerk
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
