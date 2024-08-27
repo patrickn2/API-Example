@@ -1,0 +1,6 @@
+with-expecter: true
+dir: "mocks/"
+outpkg: "mocks"
+packages:
+  github.com/patrickn2/api-challenge/interfaces:
+    all: true

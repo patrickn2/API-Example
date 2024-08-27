@@ -1,0 +1,5 @@
+.docker_volumes/data
+cmd/api/main
+cmd/migrations/main
+cmd/api/main.exe
+cmd/migrations/main.exe
