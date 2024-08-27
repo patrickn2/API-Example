@@ -126,6 +126,7 @@ func getRandomUser(ctx context.Context, try int) []*schema.User {
 }
 
 func (us *UserService) Clerks(ctx context.Context, params *schema.GetClerksParams) (*ClerksResponse, error) {
+	handleLimit(params.Limit)
 	if params.Limit != nil {
 		// The idea is not return an error if the user use a limit lower than 1 or higher than 100
 		if *params.Limit == 0 {
@@ -175,4 +176,22 @@ func (us *UserService) Clerks(ctx context.Context, params *schema.GetClerksParam
 		}
 	}
 	return &response, nil
+}
+
+func handleLimit(limit *uint) {
+	if limit != nil {
+		// The idea is not return an error if the user use a limit lower than 1 or higher than 100
+		if *limit == 0 {
+			l := uint(10)
+			limit = &l
+		}
+		if *limit > 100 {
+			l := uint(100)
+			limit = &l
+		}
+	} else {
+		// Default limit is 10
+		l := uint(10)
+		limit = &l
+	}
 }

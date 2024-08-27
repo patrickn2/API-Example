@@ -13,12 +13,12 @@ func main() {
 	createFlag := flag.String("create", "", "Create a new migration\nUse -create migrationName")
 	flag.Parse()
 
-	if *upFlag {
+	if upFlag != nil && *upFlag {
 		fmt.Println("Migrations up")
 		migrations.Up()
 		return
 	}
-	if *downFlag {
+	if downFlag != nil && *downFlag {
 		fmt.Println("Migrations up")
 		migrations.Down()
 		return

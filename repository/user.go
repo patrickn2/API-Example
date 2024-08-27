@@ -36,11 +36,16 @@ func (p *UserRepository) GetClerks(ctx context.Context, params *schema.GetClerks
 
 	var users []*schema.User
 	tx := db.Model(&schema.User{})
-	if params.Email != nil {
-		tx = tx.Where("email ~ ?", *params.Email)
-	}
+	tx = filterEmail(tx, params.Email)
 	tx.Order("created_at DESC").Limit(int(*params.Limit) + 1).Find(&users)
 	return users, nil
+}
+
+func filterEmail(tx *gorm.DB, email *string) *gorm.DB {
+	if email != nil {
+		return tx.Where("email ~ ?", *email)
+	}
+	return tx
 }
 
 func getStartEndingUsers(db *gorm.DB, params *schema.GetClerksParams) ([]*schema.User, error) {

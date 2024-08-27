@@ -17,13 +17,8 @@ type Envs struct {
 	ApiPort          string `env:"API_PORT, required"`
 }
 
-var envs Envs
-
-func GetEnvs() *Envs {
-	return &envs
-}
-
 func Init() *Envs {
+	var envs Envs
 	ctx := context.Background()
 	if err := envconfig.Process(ctx, &envs); err != nil {
 		log.Fatal(err)

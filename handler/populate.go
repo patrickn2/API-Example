@@ -15,7 +15,6 @@ func (h *Handler) Populate(ginCtx *gin.Context) {
 	go checkConnectionStatus(cancel, ginCtx, done)
 
 	rows, err := h.Services.UserService.NewUsers(ctx)
-
 	if err != nil {
 		log.Printf("Error inserting users %v\n", err)
 		done <- true
